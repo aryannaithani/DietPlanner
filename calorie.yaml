@@ -1,0 +1,2 @@
+calorie:
+  xpath: '//*[@id="content"]/div[3]/div[1]/font/b'
