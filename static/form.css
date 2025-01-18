@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100..900;1,100..900&display=swap');
+
 .container {
     max-width: fit-content;
     margin-left: auto;
@@ -25,6 +27,7 @@ input[type=text] {
 }
 
 body {
+    font-family: "Poppins", sans-serif;
     background-image: url('images3.jpg');
     background-size: 1550px;
 }
@@ -45,13 +48,18 @@ input[type=submit]:hover {
     transition: 0.3s;
     box-shadow: 3.0px 4.0px 6.0px hsl(0deg 0% 0% / 0.31);
     font-size: 15px;
-
 }
 
 select {
     margin-bottom: 20px;
+    width: 30%;
 }
 
 input[type=radio] {
     margin-bottom: 0px;
+}
+
+h4 {
+    text-align: center;
+    margin: 0px;
 }

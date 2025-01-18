@@ -35,7 +35,7 @@ class CalorieForm(Form):
     weight = StringField('Weight (in kgs)',[validators.DataRequired()])
     age = StringField('Age',[validators.DataRequired()])
     height = StringField('Height (in cms)',[validators.DataRequired()])
-    button = SubmitField("Get Recipes",[validators.DataRequired()])
+    button = SubmitField("Count Intake 🥝", [validators.DataRequired()])
     gender = RadioField('Select Gender', [validators.DataRequired()], choices=[('m', 'Male'), ('f', 'Female')])
     activity = SelectField('Select an Activity Level', [validators.DataRequired()],
                                                             choices=[(None, 'Select'),
