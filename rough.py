@@ -1,24 +1,40 @@
-activity_level = {'sedentary': 1.2,
-                  'light': 1.3,
-                  'moderate': 1.5,
-                  'heavy': 1.7,
-                  'very heavy': 1.9}
-gain_lose = {'maintain': 1,
-             'mild loss': 0.9,
-             'loss': 0.79,
-             'extreme loss': 0.58,
-             'mild gain': 1.1,
-             'gain': 1.21,
-             'fast gain': 1.42}
+import requests
 
-sex = input('Enter Your Gender: ')
-age = int(input('Enter Your Age: '))
-height = int(input('Enter Height: '))
-weight = int(input('Enter Weight: '))
-activity = input('Enter Activity Level: ')
-goal = input('Enter weight gain or lose?: ')
+# Replace with your Spoonacular API key
+API_KEY = "17318ba1b30e475bb39c7e643bb82ae0"
 
-calories = round((((10*weight) + (6.25*height) - (5*age) + 5) * activity_level.get(activity)) * gain_lose.get(goal))\
-           if sex == 'm' else\
-           round((((10 * weight) + (6.25 * height) - (5 * age) - 161) * activity_level.get(activity)) * gain_lose.get(goal))
-print(calories)
+
+def get_recipes(ingredient, max_calories):
+    url = "https://api.spoonacular.com/recipes/complexSearch"
+    params = {
+        "apiKey": API_KEY,
+        "query": ingredient,  # Search query (e.g., ingredient or dish)
+        "maxCalories": max_calories,  # Maximum calories
+        "addRecipeInformation": True,
+        "diet": "vegetarian",# Include detailed recipe information
+    }
+
+    response = requests.get(url, params=params)
+
+    if response.status_code == 200:
+        data = response.json()
+        return data.get("results", [])  # Return list of recipes
+    elif response.status_code == 401:
+        print("Unauthorized: Check your API key.")
+        return []
+    else:
+        print(f"Error: {response.status_code} - {response.text}")
+        return []
+
+
+# Example usage
+ingredient = "broccoli"
+max_calories = 500
+recipes = get_recipes(ingredient, max_calories)
+
+if recipes:
+    for idx, recipe in enumerate(recipes, start=1):
+        print(f"{idx}. {recipe['title']} - Recipe ID: {recipe['id']}")
+        print(f"URL: {recipe.get('sourceUrl', 'No URL provided')}\n")
+else:
+    print("No recipes found or an error occurred.")

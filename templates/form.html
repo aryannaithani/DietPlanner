@@ -26,7 +26,11 @@
             {{form.button}}
         </form>
         {% if result %}
-            <p>Your Caloric Requirement is {{calories}} Kcal</p>
+            {% for recipe in recipes %}
+                <p>{{recipe["title"]}}
+                <a href="{{recipe.get('sourceUrl', 'No URL provided')}}" target="_blank"><button>Look Up Recipe</button></a>
+                </p>
+            {% endfor %}
         {% endif %}
     </div>
 </body>
