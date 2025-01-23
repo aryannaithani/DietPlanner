@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100..900;1,100..900&display=swap');
 
 .container {
-    max-width: fit-content;
+    width: 33%;
     margin-left: auto;
     margin-right: auto;
     border: 1px solid black;
@@ -18,12 +18,13 @@
 }
 
 input[type=text] {
+    border: 2px solid green;
     margin-bottom: 10px;
     margin-right: auto;
     margin-left: auto;
     width: 98%;
+    height: 30px;
     border-radius: 5px;
-    border: 0px;
 }
 
 body {
@@ -53,6 +54,7 @@ input[type=submit]:hover {
 select {
     margin-bottom: 20px;
     width: 30%;
+    border: 1px solid green;
 }
 
 input[type=radio] {
@@ -81,8 +83,31 @@ a {
     padding-right: 20px;
     border-radius: 15px;
     background-color: ghostwhite;
-    border: 0px;
+    border: 2px solid green;
     margin-top: 100px;
     box-shadow: 6.0px 12.0px 12.0px hsl(0deg 0% 0% / 0.31),
                 -3.0px -3px 12.0px hsl(0deg 0% 0% / 0.31);
+}
+
+.box:hover {
+    transform: scale(1.1);
+    transition: 0.4s;
+}
+
+button {
+    background-color: #2bbd35;
+    color: white;
+    width: 98%;
+    border: 0px;
+    border-radius: 5px;
+    padding: 8px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+button:hover {
+    background-color: #2b702f;
+    transition: 0.3s;
+    box-shadow: 3.0px 4.0px 6.0px hsl(0deg 0% 0% / 0.31);
+    font-size: 15px;
 }

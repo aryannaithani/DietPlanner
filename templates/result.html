@@ -7,12 +7,11 @@
     <link rel="stylesheet" href="static/form.css">
 </head>
 <body>
-    <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+    <div style="display: flex; flex-wrap: wrap;">
         {% for recipe in recipes %}
             <div class="box">
-                <p>{{recipe["title"]}}
-                <a href="{{recipe.get('sourceUrl', 'No URL provided')}}" target="_blank"><button>Look Up Recipe</button></a>
-                </p>
+                <h4>{{recipe["title"]}}</h4>
+                <p><a href="{{recipe.get('sourceUrl', 'No URL provided')}}" target="_blank"><button>Look Up Recipe</button></a></p>
             </div>
         {% endfor %}
     </div>

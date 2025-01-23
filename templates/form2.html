@@ -8,20 +8,12 @@
 </head>
 <body>
     <div class="container">
-        {% if not result %}
         <h1>Your Intake is {{calories}} Calories</h1>
-        {% endif %}
-        {% if result %}
-        <h1>Bitchass Vegan</h1>
-        {% endif %}
-        <h4>Step 2/?</h4>
+        <h4>Step 2/2</h4>
         <form action="/diet-form" method="post">
             {{d_form.diet.label}}<br>{{d_form.diet}}<br>
             {{d_form.button}}
         </form>
-        {% if result %}
-            <p>{{diet}}</p>
-        {% endif %}
     </div>
 </body>
 </html>
