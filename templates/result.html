@@ -7,9 +7,13 @@
     <link rel="stylesheet" href="static/form.css">
 </head>
 <body>
-    <div class="container">
-        {% for pram in parameters %}
-            <p>{{pram}}</p>
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+        {% for recipe in recipes %}
+            <div class="box">
+                <p>{{recipe["title"]}}
+                <a href="{{recipe.get('sourceUrl', 'No URL provided')}}" target="_blank"><button>Look Up Recipe</button></a>
+                </p>
+            </div>
         {% endfor %}
     </div>
 </body>

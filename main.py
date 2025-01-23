@@ -2,6 +2,7 @@ from flask.views import MethodView
 from wtforms import Form, StringField, SubmitField, validators, RadioField, SelectField
 from flask import Flask
 from flask import render_template, request
+import requests
 
 app = Flask(__name__)
 parameters = []
@@ -10,6 +11,27 @@ class CalorieFormPage(MethodView):
 
     def __init__(self, calories=0):
         self.calories = calories
+
+    def get_recipes(self):
+        url = "https://api.spoonacular.com/recipes/complexSearch"
+        params = {
+            "apiKey": '17318ba1b30e475bb39c7e643bb82ae0',  # Search query (e.g., ingredient or dish)
+            "maxCalories": parameters[0],  # Maximum calories
+            "addRecipeInformation": True,
+            "diet": parameters[1],  # Include detailed recipe information
+        }
+
+        response = requests.get(url, params=params)
+
+        if response.status_code == 200:
+            data = response.json()
+            return data.get("results", [])  # Return list of recipes
+        elif response.status_code == 401:
+            print("Unauthorized: Check your API key.")
+            return []
+        else:
+            print(f"Error: {response.status_code} - {response.text}")
+            return []
 
     def get(self):
         form = CalorieForm()
@@ -49,12 +71,13 @@ class DietFormPage(CalorieFormPage):
         d_form = DietForm(request.form)
         diet = d_form.diet.data
         parameters.append(diet)
+        recipes = self.get_recipes()
         return render_template('result.html',
                                d_form=d_form,
                                result=True,
                                diet=diet,
                                calories=self.calories,
-                               parameters=parameters)
+                               recipes=recipes)
 
 
 class CalorieForm(Form):
