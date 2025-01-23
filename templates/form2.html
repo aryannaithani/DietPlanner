@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="static/form.css">
+</head>
+<body>
+    <div class="container">
+        {% if not result %}
+        <h1>Your Intake is {{calories}} Calories</h1>
+        {% endif %}
+        {% if result %}
+        <h1>Bitchass Vegan</h1>
+        {% endif %}
+        <h4>Step 2/?</h4>
+        <form action="/diet-form" method="post">
+            {{d_form.diet.label}}<br>{{d_form.diet}}<br>
+            {{d_form.button}}
+        </form>
+        {% if result %}
+            <p>{{diet}}</p>
+        {% endif %}
+    </div>
+</body>
+</html>

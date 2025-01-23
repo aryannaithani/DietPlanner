@@ -2,14 +2,13 @@ from flask.views import MethodView
 from wtforms import Form, StringField, SubmitField, validators, RadioField, SelectField
 from flask import Flask
 from flask import render_template, request
-import requests
 
 app = Flask(__name__)
 
 class CalorieFormPage(MethodView):
 
-    def __init__(self):
-        self.calories = 0
+    def __init__(self, calories=0):
+        self.calories = calories
 
     def get(self):
         form = CalorieForm()
@@ -24,36 +23,33 @@ class CalorieFormPage(MethodView):
         gender = form.gender.data
         activity = float(form.activity.data)
         goal = float(form.goal.data)
+        d_form = DietForm()
 
         self.calories = round((((10 * weight) + (6.25 * height) - (5 * age) + 5) * activity) * goal) \
             if gender == 'm' else \
             round((((10 * weight) + (6.25 * height) - (5 * age) - 161) * activity) * goal)
 
-        return render_template('form.html',
-                               form=form,
-                               recipes=self.get_recipes(),
-                               result=True)
+        return render_template('form2.html',
+                               d_form=d_form,
+                               calories=self.calories)
 
-    def get_recipes(self):
-        url = "https://api.spoonacular.com/recipes/complexSearch"
-        params = {
-            "apiKey": '17318ba1b30e475bb39c7e643bb82ae0',  # Search query (e.g., ingredient or dish)
-            "maxCalories": self.calories,  # Maximum calories
-            "addRecipeInformation": True,
-            "diet": "vegetarian",  # Include detailed recipe information
-        }
 
-        response = requests.get(url, params=params)
+class DietFormPage(CalorieFormPage):
 
-        if response.status_code == 200:
-            data = response.json()
-            return data.get("results", [])  # Return list of recipes
-        elif response.status_code == 401:
-            print("Unauthorized: Check your API key.")
-            return []
-        else:
-            print(f"Error: {response.status_code} - {response.text}")
-            return []
+    def get(self):
+        d_form = DietForm()
+        return render_template('form2.html',
+                               d_form=d_form,
+                               calories=self.calories)
+
+    def post(self):
+        d_form = DietForm(request.form)
+        diet = d_form.diet.data
+        return render_template('form2.html',
+                               d_form=d_form,
+                               result=True,
+                               diet=diet,
+                               calories=self.calories)
 
 
 class CalorieForm(Form):
@@ -80,6 +76,14 @@ class CalorieForm(Form):
                                                              (1.42, 'Fast Gain')])
 
 
+class DietForm(Form):
+    diet = SelectField('Select a Diet Type', choices=[('', 'Not Specified'),
+                                                          ('vegetarian', 'Vegetarian'),
+                                                          ('vegan', 'Vegan')])
+    button = SubmitField("Show Recipes", [validators.DataRequired()])
+
+
 app.add_url_rule('/', view_func=CalorieFormPage.as_view('form_page'))
+app.add_url_rule('/diet-form', view_func=DietFormPage.as_view('diet_form_page'))
 
 app.run(debug=True)
