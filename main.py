@@ -4,6 +4,7 @@ from flask import Flask
 from flask import render_template, request
 
 app = Flask(__name__)
+parameters = []
 
 class CalorieFormPage(MethodView):
 
@@ -29,6 +30,8 @@ class CalorieFormPage(MethodView):
             if gender == 'm' else \
             round((((10 * weight) + (6.25 * height) - (5 * age) - 161) * activity) * goal)
 
+        parameters.append(self.calories)
+
         return render_template('form2.html',
                                d_form=d_form,
                                calories=self.calories)
@@ -45,11 +48,13 @@ class DietFormPage(CalorieFormPage):
     def post(self):
         d_form = DietForm(request.form)
         diet = d_form.diet.data
-        return render_template('form2.html',
+        parameters.append(diet)
+        return render_template('result.html',
                                d_form=d_form,
                                result=True,
                                diet=diet,
-                               calories=self.calories)
+                               calories=self.calories,
+                               parameters=parameters)
 
 
 class CalorieForm(Form):
