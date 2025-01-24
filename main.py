@@ -87,14 +87,14 @@ class CalorieForm(Form):
     button = SubmitField("Count Intake 🥝", [validators.DataRequired()])
     gender = RadioField('Select Gender', [validators.DataRequired()], choices=[('m', 'Male'), ('f', 'Female')])
     activity = SelectField('Select an Activity Level', [validators.DataRequired()],
-                                                            choices=[(1, 'Select'),
+                                                            choices=[(1, '--Select--'),
                                                                      (1.2, 'Sedentary'),
                                                                      (1.3, 'Light'),
                                                                      (1.5, 'Moderate'),
                                                                      (1.7, 'Heavy'),
                                                                      (1.9, 'Very Heavy')])
     goal = SelectField('Select a Weight Goal', [validators.DataRequired()],
-                                                    choices=[(1, 'Select'),
+                                                    choices=[(1, '--Select--'),
                                                              (1, 'Maintain'),
                                                              (0.9, 'Mild Loss'),
                                                              (0.79, 'Loss'),
