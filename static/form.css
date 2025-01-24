@@ -112,17 +112,19 @@ button:hover {
 }
 
 select:hover {
-    background-color: #196e3d;
     transition: 0.3s;
     box-shadow: 3.0px 4.0px 6.0px hsl(0deg 0% 0% / 0.31);
     transform: scale(1.05);
-    color: white;
 }
 
 input[type=text]:hover {
-    background-color: #196e3d;
     transition: 0.3s;
     box-shadow: 3.0px 4.0px 6.0px hsl(0deg 0% 0% / 0.31);
     transform: scale(1.05);
-    color: white;
+}
+
+input[type=submit]:active {
+    transform: scale(0.95);
+    background-color: #196e3d;
+    transition: 0.05s;
 }
