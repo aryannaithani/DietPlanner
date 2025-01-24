@@ -28,8 +28,7 @@ input[type=text] {
 
 body {
     font-family: "Poppins", sans-serif;
-    background-image: url('images3.jpg');
-    background-size: 1550px;
+    background-color: #c1db9b;
 }
 
 input[type=submit] {
@@ -115,16 +114,23 @@ select:hover {
     transition: 0.3s;
     box-shadow: 3.0px 4.0px 6.0px hsl(0deg 0% 0% / 0.31);
     transform: scale(1.05);
+    background-color: #c1db9b;
 }
 
 input[type=text]:hover {
     transition: 0.3s;
     box-shadow: 3.0px 4.0px 6.0px hsl(0deg 0% 0% / 0.31);
-    transform: scale(1.05);
+    transform: scale(1.025);
+    background-color: #c1db9b;
 }
 
 input[type=submit]:active {
     transform: scale(0.95);
     background-color: #196e3d;
+    transition: 0.05s;
+}
+
+input[type=radio]:hover {
+    transform: scale(1.15);
     transition: 0.05s;
 }
