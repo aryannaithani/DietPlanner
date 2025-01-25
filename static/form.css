@@ -81,15 +81,15 @@ a {
     padding-right: 20px;
     border-radius: 15px;
     background-color: ghostwhite;
-    border: 2px solid green;
+    border: 2px solid #2ecc71;
     margin-top: 100px;
-    box-shadow: 6.0px 12.0px 12.0px hsl(0deg 0% 0% / 0.31),
-                -3.0px -3px 12.0px hsl(0deg 0% 0% / 0.31);
 }
 
 .box:hover {
     transform: scale(1.05);
     transition: 0.4s;
+    box-shadow: 6.0px 12.0px 12.0px hsl(0deg 0% 0% / 0.31),
+                -3.0px -3px 12.0px hsl(0deg 0% 0% / 0.31);
 }
 
 button {
