@@ -29,6 +29,7 @@ input[type=text] {
 body {
     font-family: "Poppins", sans-serif;
     background-color: #c1db9b;
+    text-align: center;
 }
 
 input[type=submit] {
@@ -167,4 +168,8 @@ input[type=password]:hover {
     box-shadow: 3.0px 4.0px 6.0px hsl(0deg 0% 0% / 0.31);
     transform: scale(1.025);
     background-color: #c1db9b;
+}
+
+h1 {
+    color: #196e3d;
 }

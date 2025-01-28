@@ -21,6 +21,7 @@ class HomePage(MethodView):
 
 
 class LoginView(MethodView):
+
     def get(self):
         return render_template('login.html')
 
@@ -37,6 +38,7 @@ class LoginView(MethodView):
 
 
 class SignupView(MethodView):
+
     def get(self):
         return render_template('signup.html')
 
@@ -46,7 +48,7 @@ class SignupView(MethodView):
 
         if email in users:
             flash('Email already registered. Please log in.', 'danger')
-            return redirect(url_for('signup'))
+            return redirect(url_for('login'))
         else:
             hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
             users[email] = hashed_password
@@ -55,6 +57,7 @@ class SignupView(MethodView):
 
 
 class DashboardView(MethodView):
+
     def get(self):
         return "<h1>Welcome to your dashboard!</h1>"
 
@@ -106,23 +109,22 @@ class CalorieFormPage(MethodView):
 
         parameters.append(self.calories)
 
-        return redirect(url_for('diet_form_page'))
-
-
-class DietFormPage(CalorieFormPage):
-
-    def get(self):
-        d_form = DietForm()
         return render_template('form2.html',
                                d_form=d_form,
                                calories=self.calories)
+
+
+class DietFormPage(CalorieFormPage):
 
     def post(self):
         d_form = DietForm(request.form)
         diet = d_form.diet.data
         parameters.append(diet)
         recipes = self.get_recipes()
-        return render_template('result.html', recipes=recipes)
+        return render_template('result.html',
+                               calories=parameters[0],
+                               recipes=recipes,
+                               type=diet)
 
 
 class CalorieForm(Form):
