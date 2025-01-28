@@ -1,11 +1,57 @@
 from flask.views import MethodView
 from wtforms import Form, StringField, SubmitField, validators, RadioField, SelectField
 from flask import Flask
-from flask import render_template, request
+from flask import render_template, request, redirect, url_for, flash
 import requests
+import bcrypt
 
 app = Flask(__name__)
 parameters = []
+app.secret_key = 'your_secret_key'
+
+users = {
+    "test@example.com": bcrypt.hashpw("password123".encode('utf-8'), bcrypt.gensalt())
+}
+
+
+class LoginView(MethodView):
+    def get(self):
+        return render_template('login.html')
+
+    def post(self):
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        if email in users and bcrypt.checkpw(password.encode('utf-8'), users[email]):
+            flash('Login successful!', 'success')
+            return redirect(url_for('form_page'))
+        else:
+            flash('Invalid email or password.', 'danger')
+            return redirect(url_for('login'))
+
+
+class SignupView(MethodView):
+    def get(self):
+        return render_template('signup.html')
+
+    def post(self):
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        if email in users:
+            flash('Email already registered. Please log in.', 'danger')
+            return redirect(url_for('signup'))
+        else:
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+            users[email] = hashed_password
+            flash('Account created successfully! Please log in.', 'success')
+            return redirect(url_for('login'))
+
+
+class DashboardView(MethodView):
+    def get(self):
+        return "<h1>Welcome to your dashboard!</h1>"
+
 
 class CalorieFormPage(MethodView):
 
@@ -54,9 +100,7 @@ class CalorieFormPage(MethodView):
 
         parameters.append(self.calories)
 
-        return render_template('form2.html',
-                               d_form=d_form,
-                               calories=self.calories)
+        return redirect(url_for('diet_form_page'))
 
 
 class DietFormPage(CalorieFormPage):
@@ -72,12 +116,7 @@ class DietFormPage(CalorieFormPage):
         diet = d_form.diet.data
         parameters.append(diet)
         recipes = self.get_recipes()
-        return render_template('result.html',
-                               d_form=d_form,
-                               result=True,
-                               diet=diet,
-                               calories=self.calories,
-                               recipes=recipes)
+        return render_template('result.html', recipes=recipes)
 
 
 class CalorieForm(Form):
@@ -111,7 +150,10 @@ class DietForm(Form):
     button = SubmitField("Show Recipes", [validators.DataRequired()])
 
 
-app.add_url_rule('/', view_func=CalorieFormPage.as_view('form_page'))
+app.add_url_rule('/main', view_func=CalorieFormPage.as_view('form_page'))
 app.add_url_rule('/diet-form', view_func=DietFormPage.as_view('diet_form_page'))
+app.add_url_rule('/login', view_func=LoginView.as_view('login'))
+app.add_url_rule('/signup', view_func=SignupView.as_view('signup'))
+app.add_url_rule('/dashboard', view_func=DashboardView.as_view('dashboard'))
 
 app.run(debug=True)

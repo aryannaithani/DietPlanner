@@ -134,3 +134,37 @@ input[type=radio]:hover {
     transform: scale(1.15);
     transition: 0.05s;
 }
+
+input[type=email] {
+    border: 2px solid #2ecc71;
+    margin-bottom: 10px;
+    margin-right: auto;
+    margin-left: auto;
+    width: 98%;
+    height: 30px;
+    border-radius: 5px;
+}
+
+input[type=email]:hover {
+    transition: 0.3s;
+    box-shadow: 3.0px 4.0px 6.0px hsl(0deg 0% 0% / 0.31);
+    transform: scale(1.025);
+    background-color: #c1db9b;
+}
+
+input[type=password] {
+    border: 2px solid #2ecc71;
+    margin-bottom: 10px;
+    margin-right: auto;
+    margin-left: auto;
+    width: 98%;
+    height: 30px;
+    border-radius: 5px;
+}
+
+input[type=password]:hover {
+    transition: 0.3s;
+    box-shadow: 3.0px 4.0px 6.0px hsl(0deg 0% 0% / 0.31);
+    transform: scale(1.025);
+    background-color: #c1db9b;
+}
