@@ -14,6 +14,12 @@ users = {
 }
 
 
+class HomePage(MethodView):
+
+    def get(self):
+        return render_template('home.html')
+
+
 class LoginView(MethodView):
     def get(self):
         return render_template('login.html')
@@ -157,5 +163,6 @@ app.add_url_rule('/diet-form', view_func=DietFormPage.as_view('diet_form_page'))
 app.add_url_rule('/login', view_func=LoginView.as_view('login'))
 app.add_url_rule('/signup', view_func=SignupView.as_view('signup'))
 app.add_url_rule('/dashboard', view_func=DashboardView.as_view('dashboard'))
+app.add_url_rule('/', view_func=HomePage.as_view('home_page'))
 
 app.run(debug=True)
