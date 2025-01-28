@@ -120,6 +120,7 @@ class DietFormPage(CalorieFormPage):
 
 
 class CalorieForm(Form):
+
     weight = StringField('Weight (in kgs)',[validators.DataRequired()])
     age = StringField('Age',[validators.DataRequired()])
     height = StringField('Height (in cms)',[validators.DataRequired()])
@@ -144,13 +145,14 @@ class CalorieForm(Form):
 
 
 class DietForm(Form):
+
     diet = SelectField('Select a Diet Type', choices=[('', 'Not Specified'),
                                                           ('vegetarian', 'Vegetarian'),
                                                           ('vegan', 'Vegan')])
     button = SubmitField("Show Recipes", [validators.DataRequired()])
 
 
-app.add_url_rule('/main', view_func=CalorieFormPage.as_view('form_page'))
+app.add_url_rule('/counter', view_func=CalorieFormPage.as_view('form_page'))
 app.add_url_rule('/diet-form', view_func=DietFormPage.as_view('diet_form_page'))
 app.add_url_rule('/login', view_func=LoginView.as_view('login'))
 app.add_url_rule('/signup', view_func=SignupView.as_view('signup'))
