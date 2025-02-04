@@ -1,17 +1,13 @@
 from flask.views import MethodView
 from wtforms import Form, StringField, SubmitField, validators, RadioField, SelectField
-from flask import Flask
+from flask import Flask, get_flashed_messages
 from flask import render_template, request, redirect, url_for, flash
 import requests
-import bcrypt
+import pymysql
 
 app = Flask(__name__)
 parameters = []
 app.secret_key = 'your_secret_key'
-
-users = {
-    "test@example.com": bcrypt.hashpw("password123".encode('utf-8'), bcrypt.gensalt())
-}
 
 
 class HomePage(MethodView):
@@ -23,37 +19,76 @@ class HomePage(MethodView):
 class LoginView(MethodView):
 
     def get(self):
+        get_flashed_messages()
         return render_template('login.html')
 
     def post(self):
+        get_flashed_messages()
         email = request.form.get('email')
         password = request.form.get('password')
 
-        if email in users and bcrypt.checkpw(password.encode('utf-8'), users[email]):
-            flash('Login successful!', 'success')
-            return redirect(url_for('form_page'))
+        conn = pymysql.connect(
+            host="localhost",
+            port=3306,
+            user="root",
+            password="aryanyuvi5",
+            database="users"
+        )
+
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM uinfo;")
+        rows = cursor.fetchall()
+
+        for row in rows:
+            if email == row[0] and password == row[1]:
+                flash('Login successful!', 'success')
+                cursor.close()
+                conn.close()
+                return redirect(url_for('form_page'))
         else:
             flash('Invalid email or password.', 'danger')
+            cursor.close()
+            conn.close()
             return redirect(url_for('login'))
 
 
 class SignupView(MethodView):
 
     def get(self):
+        get_flashed_messages()
         return render_template('signup.html')
 
     def post(self):
         email = request.form.get('email')
         password = request.form.get('password')
 
-        if email in users:
-            flash('Email already registered. Please log in.', 'danger')
-            return redirect(url_for('login'))
-        else:
-            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-            users[email] = hashed_password
-            flash('Account created successfully! Please log in.', 'success')
-            return redirect(url_for('login'))
+        conn = pymysql.connect(
+            host="localhost",
+            port=3306,
+            user="root",
+            password="aryanyuvi5",
+            database="users"
+        )
+
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM uinfo;")
+        rows = cursor.fetchall()
+
+        get_flashed_messages()
+
+        for row in rows:
+            if email in row:
+                flash('Email already registered. Please log in.', 'danger')
+                cursor.close()
+                conn.close()
+                return redirect(url_for('login'))
+            else:
+                cursor.execute(f"INSERT INTO uinfo VALUES(\"{email}\", \"{password}\");")
+                conn.commit()
+                cursor.close()
+                conn.close()
+                flash('Account created successfully! Please log in.', 'success')
+                return redirect(url_for('login'))
 
 
 class DashboardView(MethodView):

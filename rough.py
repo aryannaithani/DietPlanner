@@ -1,26 +1,20 @@
-class DietForm(Form):
-    diet = SelectField('Select a Diet Type', choices=[('', 'Not Specified'),
-                                                          ('vegetarian', 'Vegetarian'),
-                                                          ('vegan', 'Vegan')])
-    button2 = SubmitField("Show Recipes", [validators.DataRequired()])
+import pymysql
 
-    def get_recipes(self):
-        url = "https://api.spoonacular.com/recipes/complexSearch"
-        params = {
-            "apiKey": '17318ba1b30e475bb39c7e643bb82ae0',  # Search query (e.g., ingredient or dish)
-            "maxCalories": self.calories,  # Maximum calories
-            "addRecipeInformation": True,
-            "diet": self.diet,  # Include detailed recipe information
-        }
+conn = pymysql.connect(
+    host="localhost",
+    port=3306,
+    user="root",
+    password="aryanyuvi5",
+    database="users"
+)
 
-        response = requests.get(url, params=params)
+email = 'aryannaithani1089@gmail.com'
+password = 'aryanyuvi5'
+cursor = conn.cursor()
+cursor.execute("SELECT * FROM uinfo;")
+rows = cursor.fetchall()
+cursor.execute(f"INSERT INTO uinfo VALUES(\"{email}\", \"{password}\");")
+print('Inserted')
 
-        if response.status_code == 200:
-            data = response.json()
-            return data.get("results", [])  # Return list of recipes
-        elif response.status_code == 401:
-            print("Unauthorized: Check your API key.")
-            return []
-        else:
-            print(f"Error: {response.status_code} - {response.text}")
-            return []
+cursor.close()
+conn.close()
