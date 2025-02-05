@@ -8,7 +8,7 @@ import pymysql
 app = Flask(__name__)
 parameters = []
 app.secret_key = 'your_secret_key'
-
+current_user = []
 
 class HomePage(MethodView):
 
@@ -43,6 +43,9 @@ class LoginView(MethodView):
                 get_flashed_messages()
                 cursor.close()
                 conn.close()
+
+                current_user.append(email)
+
                 return redirect(url_for('form_page'))
         else:
             flash('Invalid email or password.', 'danger')
@@ -82,7 +85,7 @@ class SignupView(MethodView):
                 conn.close()
                 return redirect(url_for('login'))
             else:
-                cursor.execute(f"INSERT INTO uinfo VALUES(\"{email}\", \"{password}\");")
+                cursor.execute(f"INSERT INTO uinfo(email, password) VALUES(\"{email}\", \"{password}\");")
                 conn.commit()
                 cursor.close()
                 conn.close()
@@ -142,6 +145,20 @@ class CalorieFormPage(MethodView):
             round((((10 * weight) + (6.25 * height) - (5 * age) - 161) * activity) * goal)
 
         parameters.append(self.calories)
+
+        conn = pymysql.connect(
+            host="localhost",
+            port=3306,
+            user="root",
+            password="aryanyuvi5",
+            database="users"
+        )
+
+        cursor = conn.cursor()
+        cursor.execute(f"UPDATE uinfo SET intake = {self.calories} WHERE email = \"{current_user[0]}\";")
+        conn.commit()
+        cursor.close()
+        conn.close()
 
         return render_template('form2.html',
                                d_form=d_form,
