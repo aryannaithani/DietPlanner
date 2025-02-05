@@ -19,11 +19,9 @@ class HomePage(MethodView):
 class LoginView(MethodView):
 
     def get(self):
-        get_flashed_messages()
         return render_template('login.html')
 
     def post(self):
-        get_flashed_messages()
         email = request.form.get('email')
         password = request.form.get('password')
 
@@ -42,6 +40,7 @@ class LoginView(MethodView):
         for row in rows:
             if email == row[0] and password == row[1]:
                 flash('Login successful!', 'success')
+                get_flashed_messages()
                 cursor.close()
                 conn.close()
                 return redirect(url_for('form_page'))
