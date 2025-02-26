@@ -1,23 +1,26 @@
 from flask.views import MethodView
 from wtforms import Form, StringField, SubmitField, validators, RadioField, SelectField
-from flask import Flask, get_flashed_messages
-from flask import render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 import requests
 import pymysql
+from werkzeug.security import generate_password_hash, check_password_hash
+from dotenv import load_dotenv
+import os
+
+# Load environment variables
+load_dotenv()
+SPOONACULAR_API_KEY = os.getenv('SPOONACULAR_API_KEY')
 
 app = Flask(__name__)
-parameters = []
-app.secret_key = 'your_secret_key'
-current_user = []
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'your_secret_key')
+
 
 class HomePage(MethodView):
-
     def get(self):
         return render_template('home.html')
 
 
 class LoginView(MethodView):
-
     def get(self):
         return render_template('login.html')
 
@@ -25,110 +28,80 @@ class LoginView(MethodView):
         email = request.form.get('email')
         password = request.form.get('password')
 
-        conn = pymysql.connect(
-            host="localhost",
-            port=3306,
-            user="root",
-            password="aryanyuvi5",
-            database="users"
-        )
+        try:
+            conn = pymysql.connect(host="localhost", port=3306, user="root", password="aryanyuvi5", database="users")
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM uinfo WHERE email = %s", (email,))
+            row = cursor.fetchone()
 
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM uinfo;")
-        rows = cursor.fetchall()
-
-        for row in rows:
-            if email == row[0] and password == row[1]:
+            if row and check_password_hash(row[1], password):
                 flash('Login successful!', 'success')
-                get_flashed_messages()
-                cursor.close()
-                conn.close()
-
-                current_user.append(email)
-
+                session['user_email'] = email
                 return redirect(url_for('form_page'))
-        else:
-            flash('Invalid email or password.', 'danger')
+            else:
+                flash('Invalid email or password.', 'danger')
+                return redirect(url_for('login'))
+        except pymysql.MySQLError as e:
+            flash("Database connection error!", "danger")
+            print("Database error:", e)
+        finally:
             cursor.close()
             conn.close()
-            return redirect(url_for('login'))
+        return redirect(url_for('login'))
 
 
 class SignupView(MethodView):
-
     def get(self):
-        get_flashed_messages()
         return render_template('signup.html')
 
     def post(self):
         email = request.form.get('email')
         password = request.form.get('password')
+        hashed_password = generate_password_hash(password)
 
-        conn = pymysql.connect(
-            host="localhost",
-            port=3306,
-            user="root",
-            password="aryanyuvi5",
-            database="users"
-        )
+        try:
+            conn = pymysql.connect(host="localhost", port=3306, user="root", password="aryanyuvi5", database="users")
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM uinfo WHERE email = %s", (email,))
+            row = cursor.fetchone()
 
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM uinfo;")
-        rows = cursor.fetchall()
-
-        get_flashed_messages()
-
-        for row in rows:
-            if email in row:
+            if row:
                 flash('Email already registered. Please log in.', 'danger')
-                cursor.close()
-                conn.close()
                 return redirect(url_for('login'))
             else:
-                cursor.execute(f"INSERT INTO uinfo(email, password) VALUES(\"{email}\", \"{password}\");")
+                cursor.execute("INSERT INTO uinfo(email, password) VALUES (%s, %s)", (email, hashed_password))
                 conn.commit()
-                cursor.close()
-                conn.close()
                 flash('Account created successfully! Please log in.', 'success')
                 return redirect(url_for('login'))
+        except pymysql.MySQLError as e:
+            flash("Database connection error!", "danger")
+            print("Database error:", e)
+        finally:
+            cursor.close()
+            conn.close()
+        return redirect(url_for('signup'))
 
 
 class DashboardView(MethodView):
-
     def get(self):
         return "<h1>Welcome to your dashboard!</h1>"
 
 
 class CalorieFormPage(MethodView):
-
-    def __init__(self, calories=0):
-        self.calories = calories
-
     def get_recipes(self):
         url = "https://api.spoonacular.com/recipes/complexSearch"
         params = {
-            "apiKey": '17318ba1b30e475bb39c7e643bb82ae0',  # Search query (e.g., ingredient or dish)
-            "maxCalories": parameters[0],  # Maximum calories
+            "apiKey": SPOONACULAR_API_KEY,
+            "maxCalories": session.get('calories', 2000),
             "addRecipeInformation": True,
-            "diet": parameters[1],  # Include detailed recipe information
+            "diet": session.get('diet', ''),
         }
-
         response = requests.get(url, params=params)
-
-        if response.status_code == 200:
-            data = response.json()
-            return data.get("results", [])  # Return list of recipes
-        elif response.status_code == 401:
-            print("Unauthorized: Check your API key.")
-            return []
-        else:
-            print(f"Error: {response.status_code} - {response.text}")
-            return []
+        return response.json().get("results", []) if response.status_code == 200 else []
 
     def get(self):
         form = CalorieForm()
-        return render_template('form.html',
-                               form=form)
+        return render_template('form.html', form=form)
 
     def post(self):
         form = CalorieForm(request.form)
@@ -140,75 +113,51 @@ class CalorieFormPage(MethodView):
         goal = float(form.goal.data)
         d_form = DietForm()
 
-        self.calories = round((((10 * weight) + (6.25 * height) - (5 * age) + 5) * activity) * goal) \
-            if gender == 'm' else \
+        calories = round((((10 * weight) + (6.25 * height) - (5 * age) + 5) * activity) * goal) if gender == 'm' else \
             round((((10 * weight) + (6.25 * height) - (5 * age) - 161) * activity) * goal)
+        session['calories'] = calories
 
-        parameters.append(self.calories)
+        try:
+            conn = pymysql.connect(host="localhost", port=3306, user="root", password="aryanyuvi5", database="users")
+            cursor = conn.cursor()
+            cursor.execute("UPDATE uinfo SET intake = %s WHERE email = %s", (calories, session['user_email']))
+            conn.commit()
+        except pymysql.MySQLError as e:
+            flash("Database error while updating intake!", "danger")
+            print("Database error:", e)
+        finally:
+            cursor.close()
+            conn.close()
 
-        conn = pymysql.connect(
-            host="localhost",
-            port=3306,
-            user="root",
-            password="aryanyuvi5",
-            database="users"
-        )
-
-        cursor = conn.cursor()
-        cursor.execute(f"UPDATE uinfo SET intake = {self.calories} WHERE email = \"{current_user[0]}\";")
-        conn.commit()
-        cursor.close()
-        conn.close()
-
-        return render_template('form2.html',
-                               d_form=d_form,
-                               calories=self.calories)
+        return render_template('form2.html', d_form=d_form, calories=calories)
 
 
 class DietFormPage(CalorieFormPage):
-
     def post(self):
         d_form = DietForm(request.form)
-        diet = d_form.diet.data
-        parameters.append(diet)
+        session['diet'] = d_form.diet.data
         recipes = self.get_recipes()
-        return render_template('result.html',
-                               calories=parameters[0],
-                               recipes=recipes,
-                               type=diet)
+        return render_template('result.html', calories=session['calories'], recipes=recipes, type=session['diet'])
 
 
 class CalorieForm(Form):
-
-    weight = StringField('Weight (in kgs)',[validators.DataRequired()])
-    age = StringField('Age',[validators.DataRequired()])
-    height = StringField('Height (in cms)',[validators.DataRequired()])
-    button = SubmitField("Count Intake 🥝", [validators.DataRequired()])
+    weight = StringField('Weight (in kgs)', [validators.DataRequired()])
+    age = StringField('Age', [validators.DataRequired()])
+    height = StringField('Height (in cms)', [validators.DataRequired()])
     gender = RadioField('Select Gender', [validators.DataRequired()], choices=[('m', 'Male'), ('f', 'Female')])
     activity = SelectField('Select an Activity Level', [validators.DataRequired()],
-                                                            choices=[(1, '--Select--'),
-                                                                     (1.2, 'Sedentary'),
-                                                                     (1.3, 'Light'),
-                                                                     (1.5, 'Moderate'),
-                                                                     (1.7, 'Heavy'),
-                                                                     (1.9, 'Very Heavy')])
+                           choices=[(1.2, 'Sedentary'), (1.3, 'Light'), (1.5, 'Moderate'), (1.7, 'Heavy'),
+                                    (1.9, 'Very Heavy')])
     goal = SelectField('Select a Weight Goal', [validators.DataRequired()],
-                                                    choices=[(1, '--Select--'),
-                                                             (1, 'Maintain'),
-                                                             (0.9, 'Mild Loss'),
-                                                             (0.79, 'Loss'),
-                                                             (0.58, 'Extreme Loss'),
-                                                             (1.1, 'Mild Gain'),
-                                                             (1.21, 'Gain'),
-                                                             (1.42, 'Fast Gain')])
+                       choices=[(1, 'Maintain'), (0.9, 'Mild Loss'), (0.79, 'Loss'), (0.58, 'Extreme Loss'),
+                                (1.1, 'Mild Gain'), (1.21, 'Gain'), (1.42, 'Fast Gain')])
+    button = SubmitField("Count Intake 🥝")
 
 
 class DietForm(Form):
-
-    diet = SelectField('Select a Diet Type', choices=[('', 'Not Specified'),
-                                                          ('vegetarian', 'Vegetarian'),
-                                                          ('vegan', 'Vegan')])
-    button = SubmitField("Show Recipes", [validators.DataRequired()])
+    diet = SelectField('Select a Diet Type',
+                       choices=[('', 'Not Specified'), ('vegetarian', 'Vegetarian'), ('vegan', 'Vegan')])
+    button = SubmitField("Show Recipes")
 
 
 app.add_url_rule('/counter', view_func=CalorieFormPage.as_view('form_page'))

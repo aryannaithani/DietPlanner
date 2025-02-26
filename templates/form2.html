@@ -8,11 +8,12 @@
 </head>
 <body>
     <div class="container">
-        <h1>Your Intake is {{calories}} Calories</h1>
-        <h4>Step 2/2</h4>
+        <h1>Your Daily Intake: {{calories}} Calories</h1>
+        <h4>Step 2/2 - Select Your Diet Preference</h4>
         <form action="/diet-form" method="post">
-            {{d_form.diet.label}}<br>{{d_form.diet}}<br>
-            {{d_form.button}}
+            <label for="diet">{{d_form.diet.label}}</label><br>
+            {{d_form.diet}}<br><br>
+            <button type="submit" class="submit-btn">{{d_form.button.label.text}}</button>
         </form>
     </div>
 </body>

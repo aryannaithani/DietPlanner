@@ -7,12 +7,19 @@
     <link rel="stylesheet" href="static/form.css">
 </head>
 <body>
-    <h1>Here are your {{type}} recipes under {{calories}} calories</h1>
-    <div style="display: flex; flex-wrap: wrap;">
+    <h1>Here are your {{ type }} recipes under {{ calories }} calories</h1>
+    <div class="container">
         {% for recipe in recipes %}
             <div class="box">
-                <h4>{{recipe["title"]}}</h4>
-                <p><a href="{{recipe.get('sourceUrl', 'No URL provided')}}" target="_blank"><button>Look Up Recipe</button></a></p>
+                <h4>{{ recipe["title"] }}</h4>
+                {% if recipe.get("image") %}
+                    <img src="{{ recipe['image'] }}" alt="{{ recipe['title'] }}">
+                {% endif %}
+                <p>
+                    <a href="{{ recipe.get('sourceUrl', '#') }}" target="_blank">
+                        <button>Look Up Recipe</button>
+                    </a>
+                </p>
             </div>
         {% endfor %}
     </div>

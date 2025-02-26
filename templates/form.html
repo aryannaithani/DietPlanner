@@ -3,27 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diet Planner</title>
+    <title>Diet Planner - Caloric Intake</title>
     <link rel="stylesheet" href="static/form.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+        h1, h4 {
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Let's Count Your Caloric Intake</h1>
+        <h1>Calculate Your Caloric Intake</h1>
         <h4>Step 1/2</h4>
         <form action="/counter" method="post">
-            {{form.age.label}}<br>{{form.age}}<br>
-            {{form.weight.label}}<br>{{form.weight}}<br>
-            {{form.height.label}}<br>{{form.height}}<br>
-            {{form.gender.label}}<br>
+            {{ form.age.label }}
+            {{ form.age }}
+
+            {{ form.weight.label }}
+            {{ form.weight }}
+
+            {{ form.height.label }}
+            {{ form.height }}
+
+            {{ form.gender.label }}<br>
             {% for subfield in form.gender %}
-            <tr>
-                <td>{{ subfield }}</td>
-                <td>{{ subfield.label }}</td>
-            </tr>
-            {% endfor %}<br>
-            {{form.activity.label}}<a href="https://clinmedjournals.org/articles/jnmdc/jnmdc-2-016table1.html" target="_blank">Learn More</a><br>{{form.activity}}<br>
-            {{form.goal.label}}<br>{{form.goal}}<br>
-            {{form.button}}
+                <label>{{ subfield }} {{ subfield.label }}</label>
+            {% endfor %}
+
+            {{ form.activity.label }} <a href="https://clinmedjournals.org/articles/jnmdc/jnmdc-2-016table1.html" target="_blank">(Learn More)</a>
+            {{ form.activity }}
+
+            {{ form.goal.label }}
+            {{ form.goal }}
+
+            {{ form.button }}
         </form>
     </div>
 </body>
