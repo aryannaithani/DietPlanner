@@ -7,7 +7,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 import os
 
-# Load environment variables
 load_dotenv()
 SPOONACULAR_API_KEY = os.getenv('SPOONACULAR_API_KEY')
 
@@ -29,7 +28,7 @@ class LoginView(MethodView):
         password = request.form.get('password')
 
         try:
-            conn = pymysql.connect(host="localhost", port=3306, user="root", password="aryanyuvi5", database="users")
+            conn = pymysql.connect(host="127.0.0.1", port=3306, user="root", password="aryanyuvi5", database="users")
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM uinfo WHERE email = %s", (email,))
             row = cursor.fetchone()
@@ -37,6 +36,8 @@ class LoginView(MethodView):
             if row and check_password_hash(row[1], password):
                 flash('Login successful!', 'success')
                 session['user_email'] = email
+                cursor.close()
+                conn.close()
                 return redirect(url_for('form_page'))
             else:
                 flash('Invalid email or password.', 'danger')
@@ -44,9 +45,6 @@ class LoginView(MethodView):
         except pymysql.MySQLError as e:
             flash("Database connection error!", "danger")
             print("Database error:", e)
-        finally:
-            cursor.close()
-            conn.close()
         return redirect(url_for('login'))
 
 
@@ -60,25 +58,26 @@ class SignupView(MethodView):
         hashed_password = generate_password_hash(password)
 
         try:
-            conn = pymysql.connect(host="localhost", port=3306, user="root", password="aryanyuvi5", database="users")
+            conn = pymysql.connect(host="127.0.0.1", port=3306, user="root", password="aryanyuvi5", database="users")
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM uinfo WHERE email = %s", (email,))
             row = cursor.fetchone()
 
             if row:
                 flash('Email already registered. Please log in.', 'danger')
+                cursor.close()
+                conn.close()
                 return redirect(url_for('login'))
             else:
                 cursor.execute("INSERT INTO uinfo(email, password) VALUES (%s, %s)", (email, hashed_password))
                 conn.commit()
                 flash('Account created successfully! Please log in.', 'success')
+                cursor.close()
+                conn.close()
                 return redirect(url_for('login'))
         except pymysql.MySQLError as e:
             flash("Database connection error!", "danger")
             print("Database error:", e)
-        finally:
-            cursor.close()
-            conn.close()
         return redirect(url_for('signup'))
 
 
@@ -118,17 +117,15 @@ class CalorieFormPage(MethodView):
         session['calories'] = calories
 
         try:
-            conn = pymysql.connect(host="localhost", port=3306, user="root", password="aryanyuvi5", database="users")
+            conn = pymysql.connect(host="172.16.147.21", port=3306, user="root", password="aryanyuvi5", database="users")
             cursor = conn.cursor()
             cursor.execute("UPDATE uinfo SET intake = %s WHERE email = %s", (calories, session['user_email']))
             conn.commit()
+            cursor.close()
+            conn.close()
         except pymysql.MySQLError as e:
             flash("Database error while updating intake!", "danger")
             print("Database error:", e)
-        finally:
-            cursor.close()
-            conn.close()
-
         return render_template('form2.html', d_form=d_form, calories=calories)
 
 
@@ -136,8 +133,9 @@ class DietFormPage(CalorieFormPage):
     def post(self):
         d_form = DietForm(request.form)
         session['diet'] = d_form.diet.data
+        session['allergen'] = d_form.allergen.data
         recipes = self.get_recipes()
-        return render_template('result.html', calories=session['calories'], recipes=recipes, type=session['diet'])
+        return render_template('result.html', calories=session['calories'], recipes=recipes, type=session['diet'], allergen=session['allergen'])
 
 
 class CalorieForm(Form):
@@ -157,6 +155,7 @@ class CalorieForm(Form):
 class DietForm(Form):
     diet = SelectField('Select a Diet Type',
                        choices=[('', 'Not Specified'), ('vegetarian', 'Vegetarian'), ('vegan', 'Vegan')])
+    allergen = RadioField('Allergens', [validators.DataRequired()], choices=[('peanut', 'Peanuts'), ('gluten', 'Gluten')])
     button = SubmitField("Show Recipes")
 
 
