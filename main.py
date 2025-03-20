@@ -13,6 +13,12 @@ SPOONACULAR_API_KEY = os.getenv('SPOONACULAR_API_KEY')
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'your_secret_key')
 
+db_host = os.environ.get("DB_HOST", "trolley.proxy.rlwy.net")
+db_user = os.environ.get("DB_USER", "root")
+db_password = os.environ.get("DB_PASSWORD", "VcNFNgolYhffcNEQlLhJvRanwESvXAeD")
+db_name = os.environ.get("DB_NAME", "railway")
+db_port = int(os.environ.get("DB_PORT", "57860"))
+
 
 class HomePage(MethodView):
     def get(self):
@@ -28,7 +34,7 @@ class LoginView(MethodView):
         password = request.form.get('password')
 
         try:
-            conn = pymysql.connect(host="127.0.0.1", port=3306, user="root", password="aryanyuvi5", database="users")
+            conn = pymysql.connect(host=db_host, port=db_port, user=db_user, password=db_password, database=db_name)
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM uinfo WHERE email = %s", (email,))
             row = cursor.fetchone()
@@ -58,7 +64,7 @@ class SignupView(MethodView):
         hashed_password = generate_password_hash(password)
 
         try:
-            conn = pymysql.connect(host="127.0.0.1", port=3306, user="root", password="aryanyuvi5", database="users")
+            conn = pymysql.connect(host=db_host, port=db_port, user=db_user, password=db_password, database=db_name)
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM uinfo WHERE email = %s", (email,))
             row = cursor.fetchone()
@@ -117,7 +123,7 @@ class CalorieFormPage(MethodView):
         session['calories'] = calories
 
         try:
-            conn = pymysql.connect(host="172.16.147.21", port=3306, user="root", password="aryanyuvi5", database="users")
+            conn = pymysql.connect(host=db_host, port=db_port, user=db_user, password=db_password, database=db_name)
             cursor = conn.cursor()
             cursor.execute("UPDATE uinfo SET intake = %s WHERE email = %s", (calories, session['user_email']))
             conn.commit()
