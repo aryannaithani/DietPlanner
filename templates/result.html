@@ -130,6 +130,7 @@ button:hover {
                 {% if recipe.get("image") %}
                     <img src="{{ recipe['image'] }}" alt="{{ recipe['title'] }}">
                 {% endif %}
+                <h4>{{recipe['nutrition']['nutrients'][0]['amount']}} calories</h4>
                 <p>
                     <a href="{{ recipe.get('sourceUrl', '#') }}" target="_blank">
                         <button>Look Up Recipe</button>
