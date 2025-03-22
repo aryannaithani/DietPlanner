@@ -6,6 +6,7 @@ import pymysql
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 import os
+from flask_login import LoginManager, UserMixin, login_required
 
 load_dotenv()
 SPOONACULAR_API_KEY = os.getenv('SPOONACULAR_API_KEY')
@@ -18,6 +19,20 @@ db_user = os.environ.get("DB_USER", "root")
 db_password = os.environ.get("DB_PASSWORD", "VcNFNgolYhffcNEQlLhJvRanwESvXAeD")
 db_name = os.environ.get("DB_NAME", "railway")
 db_port = int(os.environ.get("DB_PORT", "57860"))
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+class User(UserMixin):
+    def __init__(self, user_id):
+        self.id = user_id
+
+@login_manager.user_loader
+def load_user(user_id):
+    if user_id:
+        return User(user_id)  # Ensure it returns a valid object
+    return None
 
 
 class HomePage(MethodView):
@@ -88,11 +103,13 @@ class SignupView(MethodView):
 
 
 class DashboardView(MethodView):
+    @login_required
     def get(self):
         return "<h1>Welcome to your dashboard!</h1>"
 
 
 class CalorieFormPage(MethodView):
+    @login_required
     def get_recipes(self):
         url = "https://api.spoonacular.com/recipes/complexSearch"
         params = {
@@ -104,10 +121,12 @@ class CalorieFormPage(MethodView):
         response = requests.get(url, params=params)
         return response.json().get("results", []) if response.status_code == 200 else []
 
+    @login_required
     def get(self):
         form = CalorieForm()
         return render_template('form.html', form=form)
 
+    @login_required
     def post(self):
         form = CalorieForm(request.form)
         weight = float(form.weight.data)
@@ -136,6 +155,7 @@ class CalorieFormPage(MethodView):
 
 
 class DietFormPage(CalorieFormPage):
+    @login_required
     def post(self):
         d_form = DietForm(request.form)
         session['diet'] = d_form.diet.data
@@ -172,6 +192,8 @@ app.add_url_rule('/signup', view_func=SignupView.as_view('signup'))
 app.add_url_rule('/dashboard', view_func=DashboardView.as_view('dashboard'))
 app.add_url_rule('/', view_func=HomePage.as_view('home_page'))
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Use Render's port or default to 5000
-    app.run(host="0.0.0.0", port=port)
+#if __name__ == "__main__":
+#    port = int(os.environ.get("PORT", 5000))  # Use Render's port or default to 5000
+#    app.run(host="0.0.0.0", port=port)
+
+app.run(debug=True)
