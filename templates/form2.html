@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diet Planner</title>
     <style>
-        body {
-    margin: 0;
+        html, body {
     font-family: Arial, sans-serif;
     background-color: #c1db9b;
     color: #196e3d;
@@ -14,8 +13,56 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    height: 100%;
+    width: 100%;
 }
+
+footer {
+      background-color: #196e3d;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: auto;
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+header {
+      background-color: #196e3d;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      margin-bottom: auto;
+    }
+
+    header h1 {
+      margin-left: 0;
+      font-size: 1.5rem;
+    }
+
+
+    header .buttons a {
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    header .buttons .dashboard {
+      background-color: #196e3d;
+      color: white;
+    }
 
 .container {
     background: white;
@@ -23,8 +70,7 @@
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
-    max-width: 350px;
-    width: 100%;
+    width: 40%;
 }
 
 h1 {
@@ -41,14 +87,13 @@ h4 {
 form {
     display: flex;
     flex-direction: column;
-    gap: 0.7rem;
-    align-items: flex-start;
+    gap: 0.5rem;
 }
 
 label {
     font-weight: bold;
     font-size: 0.95rem;
-    display: block;
+    text-align: left;
 }
 
 input, select {
@@ -76,9 +121,20 @@ button:hover {
     background-color: #196e3d;
 }
 
+.allergen {
+    display: flex;
+    flex-direction: row;
+}
+
     </style>
 </head>
 <body>
+<header>
+    <h1>Diet Planner</h1>
+    <div class="buttons">
+      <a href="/dashboard" class="dashboard">👤 {{user}}</a>
+    </div>
+  </header>
     <div class="container">
         <h1>Your Daily Intake: {{calories}} Calories</h1>
         <h4>Step 2/2 - Select Your Diet Preference</h4>
@@ -86,11 +142,16 @@ button:hover {
             <label for="diet">{{d_form.diet.label}}</label><br>
             {{d_form.diet}}<br><br>
             {{ d_form.allergen.label }}<br>
+            <div class="allergen">
             {% for subfield in d_form.allergen %}
-                <label>{{ subfield }} {{ subfield.label }}</label>
+                {{ subfield }} {{ subfield.label }}
             {% endfor %}<br>
+            </div>
             <button type="submit" class="submit-btn">{{d_form.button.label.text}}</button>
         </form>
     </div>
+<footer>
+    <p>Diet Planner. By Aryan Naithani.</p>
+  </footer>
 </body>
 </html>

@@ -6,7 +6,6 @@
     <title>Diet Planner</title>
     <style>
         body {
-    margin: 0;
     font-family: Arial, sans-serif;
     background-color: #c1db9b;
     color: #196e3d;
@@ -14,8 +13,55 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 2rem;
+    margin: 0;
+    overflow-x: hidden;
+    height: 100%;
 }
+
+footer {
+      background-color: #196e3d;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: auto;
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+header {
+      background-color: #196e3d;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      margin-bottom: auto;
+    }
+
+    header h1 {
+      margin-left: 0;
+      font-size: 1.5rem;
+    }
+
+
+    header .buttons a {
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    header .buttons .dashboard {
+      background-color: #196e3d;
+      color: white;
+    }
 
 h1 {
     font-size: 1.5rem;
@@ -69,6 +115,12 @@ button:hover {
     </style>
 </head>
 <body>
+<header>
+    <h1>Diet Planner</h1>
+    <div class="buttons">
+      <a href="/dashboard" class="dashboard">👤 {{user}}</a>
+    </div>
+  </header>
     <h1>Here are your {{ type }} recipes under {{ calories }} calories excluding {{allergen}}</h1>
     <div class="container">
         {% for recipe in recipes %}
@@ -85,5 +137,8 @@ button:hover {
             </div>
         {% endfor %}
     </div>
+<footer>
+    <p>Diet Planner. By Aryan Naithani.</p>
+  </footer>
 </body>
 </html>

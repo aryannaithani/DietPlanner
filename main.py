@@ -58,7 +58,7 @@ class LoginView(MethodView):
                 flash('Login successful!', 'success')
                 login_user(load_user(email))
                 session['user_email'] = email
-                print("Session started with", session)
+                session.pop('_flashes', None)
                 cursor.close()
                 conn.close()
                 return redirect(url_for('form_page'))
@@ -126,7 +126,7 @@ class CalorieFormPage(MethodView):
     @login_required
     def get(self):
         form = CalorieForm()
-        return render_template('form.html', form=form)
+        return render_template('form.html', form=form, user=session['user_email'])
 
     @login_required
     def post(self):
@@ -153,7 +153,7 @@ class CalorieFormPage(MethodView):
         except pymysql.MySQLError as e:
             flash("Database error while updating intake!", "danger")
             print("Database error:", e)
-        return render_template('form2.html', d_form=d_form, calories=calories)
+        return render_template('form2.html', d_form=d_form, calories=calories, user=session['user_email'])
 
 
 class DietFormPage(CalorieFormPage):
@@ -163,7 +163,7 @@ class DietFormPage(CalorieFormPage):
         session['diet'] = d_form.diet.data
         session['allergen'] = d_form.allergen.data
         recipes = self.get_recipes()
-        return render_template('result.html', calories=session['calories'], recipes=recipes, type=session['diet'], allergen=session['allergen'])
+        return render_template('result.html', calories=session['calories'], recipes=recipes, type=session['diet'], allergen=session['allergen'], user=session['user_email'])
 
 
 class CalorieForm(Form):
@@ -194,6 +194,7 @@ app.add_url_rule('/signup', view_func=SignupView.as_view('signup'))
 app.add_url_rule('/dashboard', view_func=DashboardView.as_view('dashboard'))
 app.add_url_rule('/', view_func=HomePage.as_view('home_page'))
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Use Render's port or default to 5000
-    app.run(host="0.0.0.0", port=port)
+#if __name__ == "__main__":
+#    port = int(os.environ.get("PORT", 5000))  # Use Render's port or default to 5000
+#    app.run(host="0.0.0.0", port=port)
+app.run(debug=True)
