@@ -6,7 +6,7 @@ import pymysql
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 import os
-from flask_login import LoginManager, UserMixin, login_required
+from flask_login import LoginManager, UserMixin, login_required, login_user
 
 load_dotenv()
 SPOONACULAR_API_KEY = os.getenv('SPOONACULAR_API_KEY')
@@ -56,7 +56,9 @@ class LoginView(MethodView):
 
             if row and check_password_hash(row[1], password):
                 flash('Login successful!', 'success')
+                login_user(load_user(email))
                 session['user_email'] = email
+                print("Session started with", session)
                 cursor.close()
                 conn.close()
                 return redirect(url_for('form_page'))
@@ -192,8 +194,6 @@ app.add_url_rule('/signup', view_func=SignupView.as_view('signup'))
 app.add_url_rule('/dashboard', view_func=DashboardView.as_view('dashboard'))
 app.add_url_rule('/', view_func=HomePage.as_view('home_page'))
 
-#if __name__ == "__main__":
-#    port = int(os.environ.get("PORT", 5000))  # Use Render's port or default to 5000
-#    app.run(host="0.0.0.0", port=port)
-
-app.run(debug=True)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))  # Use Render's port or default to 5000
+    app.run(host="0.0.0.0", port=port)
