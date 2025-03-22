@@ -144,7 +144,7 @@ button:hover {
             {{ d_form.allergen.label }}<br>
             <div class="allergen">
             {% for subfield in d_form.allergen %}
-                {{ subfield }} {{ subfield.label }}
+                <div style="display: flex; flex-direction:row;">{{ subfield }} {{ subfield.label }}</div>
             {% endfor %}<br>
             </div>
             <button type="submit" class="submit-btn">{{d_form.button.label.text}}</button>

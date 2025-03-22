@@ -1,5 +1,5 @@
 from flask.views import MethodView
-from wtforms import Form, StringField, SubmitField, validators, RadioField, SelectField
+from wtforms import Form, StringField, SubmitField, validators, RadioField, SelectField, SelectMultipleField, widgets
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import requests
 import pymysql
@@ -119,6 +119,7 @@ class CalorieFormPage(MethodView):
             "maxCalories": session.get('calories', 2000),
             "addRecipeInformation": True,
             "diet": session.get('diet', ''),
+            "excludeIngredients": session['allergen'],
         }
         response = requests.get(url, params=params)
         return response.json().get("results", []) if response.status_code == 200 else []
@@ -161,7 +162,7 @@ class DietFormPage(CalorieFormPage):
     def post(self):
         d_form = DietForm(request.form)
         session['diet'] = d_form.diet.data
-        session['allergen'] = d_form.allergen.data
+        session['allergen'] = ",".join(d_form.allergen.data)
         recipes = self.get_recipes()
         return render_template('result.html', calories=session['calories'], recipes=recipes, type=session['diet'], allergen=session['allergen'], user=session['user_email'])
 
@@ -180,10 +181,17 @@ class CalorieForm(Form):
     button = SubmitField("Count Intake 🥝")
 
 
+class MultiCheckboxField(SelectMultipleField):
+    widget = widgets.ListWidget(prefix_label=False)  # Places label after checkbox
+    option_widget = widgets.CheckboxInput()
+
+
 class DietForm(Form):
     diet = SelectField('Select a Diet Type',
                        choices=[('', 'Not Specified'), ('vegetarian', 'Vegetarian'), ('vegan', 'Vegan')])
-    allergen = RadioField('Allergens', [validators.DataRequired()], choices=[('peanut', 'Peanuts'), ('gluten', 'Gluten')])
+    allergen = MultiCheckboxField('Allergens', choices=[('peanut', 'Peanuts'), ('gluten', 'Gluten'), ('dairy', 'Dairy'),
+        ('soy', 'Soy'),
+        ('shellfish', 'Shellfish')])
     button = SubmitField("Show Recipes")
 
 
@@ -197,3 +205,5 @@ app.add_url_rule('/', view_func=HomePage.as_view('home_page'))
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # Use Render's port or default to 5000
     app.run(host="0.0.0.0", port=port)
+
+#app.run(debug=True)
