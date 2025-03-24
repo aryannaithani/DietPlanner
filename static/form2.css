@@ -1,0 +1,120 @@
+html, body {
+    font-family: Arial, sans-serif;
+    background-color: #c1db9b;
+    color: #196e3d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    overflow-x: hidden;
+    height: 100%;
+    width: 100%;
+}
+
+footer {
+      background-color: #196e3d;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: auto;
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+header {
+      background-color: #196e3d;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      margin-bottom: auto;
+    }
+
+    header h1 {
+      margin-left: 0;
+      font-size: 1.5rem;
+    }
+
+
+    header .buttons a {
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    header .buttons .dashboard {
+      background-color: #196e3d;
+      color: white;
+    }
+
+.container {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 40%;
+}
+
+h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+h4 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: #2ecc71;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+label {
+    font-weight: bold;
+    font-size: 0.95rem;
+    text-align: left;
+}
+
+input, select {
+    width: 100%;
+    padding: 0.4rem;
+    border: 1px solid #196e3d;
+    border-radius: 5px;
+    font-size: 0.95rem;
+}
+
+button {
+    background-color: #2ecc71;
+    color: white;
+    padding: 0.6rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+button:hover {
+    background-color: #196e3d;
+}
+
+.allergen {
+    display: flex;
+    flex-direction: row;
+}
