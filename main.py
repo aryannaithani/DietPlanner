@@ -37,7 +37,19 @@ def load_user(user_id):
 
 class HomePage(MethodView):
     def get(self):
-        return render_template('home.html')
+        h_form = HomePageForm()
+        return render_template('home.html', h_form=h_form)
+
+    def post(self):
+        h_form = HomePageForm(request.form)
+        session['diet'] = h_form.diet.data
+        session['meal_count'] = h_form.meal_count.data
+        session['allergen'] = ",".join(h_form.allergen.data)
+        session['max_cal'] = session['calories'] / int(h_form.meal_count.data)
+        recipes = CalorieFormPage.get_recipes()
+        return render_template('result.html', calories=session['calories'], recipes=recipes, type=session['diet'],
+                               allergen=session['allergen'], user=session['user_email'],
+                               meal_count=session['meal_count'])
 
 
 class LoginView(MethodView):
@@ -200,6 +212,18 @@ class DietForm(Form):
     button = SubmitField("Show Recipes")
 
 
+class HomePageForm(Form):
+    diet = SelectField('Select a Diet Type',
+                       choices=[('', 'Not Specified'), ('vegetarian', 'Vegetarian'), ('vegan', 'Vegan')])
+    meal_count = SelectField('Select number of meals',
+                             choices=[(1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5'), (6, '6'), ])
+    button = SubmitField("Show Recipes")
+    cals = StringField('Enter Calories', [validators.DataRequired()])
+    allergen = MultiCheckboxField('Allergens', choices=[('peanut', 'Peanuts'), ('gluten', 'Gluten'), ('dairy', 'Dairy'),
+                                                        ('soy', 'Soy'),
+                                                        ('shellfish', 'Shellfish')])
+
+
 app.add_url_rule('/counter', view_func=CalorieFormPage.as_view('form_page'))
 app.add_url_rule('/diet-form', view_func=DietFormPage.as_view('diet_form_page'))
 app.add_url_rule('/login', view_func=LoginView.as_view('login'))
@@ -207,8 +231,8 @@ app.add_url_rule('/signup', view_func=SignupView.as_view('signup'))
 app.add_url_rule('/dashboard', view_func=DashboardView.as_view('dashboard'))
 app.add_url_rule('/', view_func=HomePage.as_view('home_page'))
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Use Render's port or default to 5000
-    app.run(host="0.0.0.0", port=port)
+#if __name__ == "__main__":
+#    port = int(os.environ.get("PORT", 5000))  # Use Render's port or default to 5000
+#    app.run(host="0.0.0.0", port=port)
 
-#app.run(debug=True)
+app.run(debug=True)
