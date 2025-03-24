@@ -116,7 +116,8 @@ class CalorieFormPage(MethodView):
         url = "https://api.spoonacular.com/recipes/complexSearch"
         params = {
             "apiKey": SPOONACULAR_API_KEY,
-            "maxCalories": session.get('calories', 2000),
+            "maxCalories": session.get('max_cal', 500),
+            "minCalories": session.get('max_cal') - 100,
             "addRecipeInformation": True,
             "diet": session.get('diet', ''),
             "excludeIngredients": session['allergen'],
@@ -163,8 +164,10 @@ class DietFormPage(CalorieFormPage):
         d_form = DietForm(request.form)
         session['diet'] = d_form.diet.data
         session['allergen'] = ",".join(d_form.allergen.data)
+        session['meal_count'] = d_form.meal_count.data
+        session['max_cal'] = session['calories']/int(d_form.meal_count.data)
         recipes = self.get_recipes()
-        return render_template('result.html', calories=session['calories'], recipes=recipes, type=session['diet'], allergen=session['allergen'], user=session['user_email'])
+        return render_template('result.html', calories=session['calories'], recipes=recipes, type=session['diet'], allergen=session['allergen'], user=session['user_email'], meal_count=session['meal_count'])
 
 
 class CalorieForm(Form):
@@ -192,6 +195,8 @@ class DietForm(Form):
     allergen = MultiCheckboxField('Allergens', choices=[('peanut', 'Peanuts'), ('gluten', 'Gluten'), ('dairy', 'Dairy'),
         ('soy', 'Soy'),
         ('shellfish', 'Shellfish')])
+    meal_count = SelectField('Select number of meals',
+                       choices=[(1, '1'), (2, '2'), (3, '3'),(4, '4'),(5, '5'),(6, '6'),])
     button = SubmitField("Show Recipes")
 
 

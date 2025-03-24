@@ -122,7 +122,7 @@ button:hover {
       <a href="/dashboard" class="dashboard">👤 {{user}}</a>
     </div>
   </header>
-    <h1>Here are your {{ type }} recipes under {{ calories }} calories excluding {{allergen}}</h1>
+    <h1>Here are your {{ type }} recipes for {{meal_count}} meals, under {{ calories }} calories excluding {{allergen}}</h1>
     <div class="container">
         {% for recipe in recipes %}
             <div class="box">

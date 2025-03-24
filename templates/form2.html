@@ -143,6 +143,8 @@ button:hover {
         <form action="/diet-form" method="post">
             <label for="diet">{{d_form.diet.label}}</label><br>
             {{d_form.diet}}<br><br>
+            <label for="meal_count">{{d_form.meal_count.label}}</label><br>
+            {{d_form.meal_count}}<br><br>
             {{ d_form.allergen.label }}<br>
             <div class="allergen">
             {% for subfield in d_form.allergen %}
