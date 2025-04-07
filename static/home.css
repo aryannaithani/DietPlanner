@@ -176,3 +176,8 @@ button:hover {
     #main {
       padding-top: 180px;
     }
+
+img {
+    border: 0px;
+    border-radius: 5px;
+}
