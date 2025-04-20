@@ -18,7 +18,7 @@ db_host = os.environ.get("DB_HOST", "trolley.proxy.rlwy.net")
 db_user = os.environ.get("DB_USER", "root")
 db_password = os.environ.get("DB_PASSWORD", "VcNFNgolYhffcNEQlLhJvRanwESvXAeD")
 db_name = os.environ.get("DB_NAME", "railway")
-db_port = int(os.environ.get("DB_PORT", "57860"))
+db_port = int(os.environ.get("DB_PORT", 57860))
 
 login_manager = LoginManager()
 login_manager.init_app(app)
