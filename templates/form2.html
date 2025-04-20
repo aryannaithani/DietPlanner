@@ -3,40 +3,352 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diet Planner</title>
-    <link rel="stylesheet" href="static/mediaqueries.css">
+    <title>Diet Planner - Diet Preferences</title>
     <link rel="icon" type="image/x-icon" href="static/favicon.ico">
-    <link rel="stylesheet" href="static/form2.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --primary-light: #E8F5E9;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --white: #ffffff;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: var(--light-gray);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-container img {
+            height: 40px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .logo-container h1 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            padding-left: 10px;
+            color: var(--primary-color);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .dashboard {
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            background-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dashboard:hover {
+            background-color: var(--primary-light);
+        }
+
+        .container {
+            max-width: 700px;
+            width: 90%;
+            margin: 100px auto 40px;
+            padding: 2.5rem;
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            flex: 1;
+        }
+
+        .container h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+            text-align: center;
+        }
+
+        .container h4 {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        .allergen {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .allergen input[type="checkbox"] {
+            width: auto;
+            margin-right: 0.5rem;
+        }
+
+        .allergen label {
+            display: inline;
+            margin-bottom: 0;
+        }
+
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.9rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            background-color: #43A047;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            background-color: var(--text-color);
+            color: var(--white);
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: auto;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            width: 100%; /* Step 2/2 = 100% */
+            background-color: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            color: var(--primary-color);
+            margin-left: 0.5rem;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--text-color);
+            color: var(--white);
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+            font-weight: normal;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--text-color) transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1.5rem;
+                width: 95%;
+            }
+
+            .allergen {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            header {
+                padding: 1rem 3%;
+            }
+
+            .logo-container h1 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-<header>
-    <div style="display: flex; flex-direction: row;">
-      <img src="static/logonew.jpg">
-    <h1 style="padding-left: 10px;">Diet Planner</h1>
-          </div>
-    <div class="buttons">
-      <a href="/dashboard" class="dashboard">👤 {{user}}</a>
-    </div>
-  </header>
+    <header>
+        <div class="logo-container">
+            <img src="static/logonew.jpg" alt="Diet Planner Logo">
+            <h1>Diet Planner</h1>
+        </div>
+        <div class="buttons">
+            <a href="/dashboard" class="dashboard"><i class="fas fa-user"></i> {{user}}</a>
+        </div>
+    </header>
+
     <div class="container">
         <h1>Your Daily Intake: {{calories}} Calories</h1>
         <h4>Step 2/2 - Select Your Diet Preference</h4>
+
+        <div class="progress-bar">
+            <div class="progress"></div>
+        </div>
+
         <form action="/diet-form" method="post">
-            <label for="diet">{{d_form.diet.label}}</label><br>
-            {{d_form.diet}}<br><br>
-            <label for="meal_count">{{d_form.meal_count.label}}</label><br>
-            {{d_form.meal_count}}<br><br>
-            {{ d_form.allergen.label }}<br>
-            <div class="allergen">
-            {% for subfield in d_form.allergen %}
-                <div style="display: flex; flex-direction:row;">{{ subfield }} {{ subfield.label }}</div>
-            {% endfor %}<br>
+            <div class="form-group">
+                <label for="diet">{{d_form.diet.label}}
+                    <span class="tooltip"><i class="fas fa-info-circle"></i>
+                        <span class="tooltiptext">Choose the diet plan that best fits your preferences</span>
+                    </span>
+                </label>
+                {{d_form.diet}}
             </div>
+
+            <div class="form-group">
+                <label for="meal_count">{{d_form.meal_count.label}}
+                    <span class="tooltip"><i class="fas fa-info-circle"></i>
+                        <span class="tooltiptext">How many meals would you like to have in a day</span>
+                    </span>
+                </label>
+                {{d_form.meal_count}}
+            </div>
+
+            <div class="form-group">
+                <label for="allergen">{{ d_form.allergen.label }}
+                    <span class="tooltip"><i class="fas fa-info-circle"></i>
+                        <span class="tooltiptext">Select any food allergies you may have</span>
+                    </span>
+                </label>
+                <div class="allergen">
+                    {% for subfield in d_form.allergen %}
+                        <div style="display: flex; align-items: center;">
+                            {{ subfield }} {{ subfield.label }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
             <button type="submit" class="submit-btn">{{d_form.button.label.text}}</button>
         </form>
     </div>
-<footer>
-    <p>Diet Planner. By Aryan Naithani.</p>
-  </footer>
+
+    <footer>
+        <p>Diet Planner. By Aryan Naithani.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

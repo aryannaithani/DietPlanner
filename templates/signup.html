@@ -4,13 +4,287 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Signup | Diet Planner</title>
-  <link rel="stylesheet" href="static/mediaqueries.css">
   <link rel="icon" type="image/x-icon" href="static/favicon.ico">
-  <link rel="stylesheet" href="static/signup.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #4CAF50;
+      --primary-light: #E8F5E9;
+      --text-color: #333;
+      --light-gray: #f5f5f5;
+      --white: #ffffff;
+      --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+      --error-color: #f44336;
+      --success-color: #4CAF50;
+      --info-color: #2196F3;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      color: var(--text-color);
+      line-height: 1.6;
+      background-color: var(--primary-light);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-image: linear-gradient(135deg, var(--primary-light) 0%, #ffffff 100%);
+    }
+
+    .signup-container {
+      background-color: var(--white);
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .signup-container:hover {
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .logo-container img {
+      height: 40px;
+      width: auto;
+      border-radius: 8px;
+    }
+
+    .logo-container h2 {
+      font-size: 1.2rem;
+      font-weight: 500;
+      padding-left: 10px;
+      color: var(--primary-color);
+    }
+
+    h1 {
+      color: var(--text-color);
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .input-group {
+      position: relative;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--text-color);
+    }
+
+    input {
+      width: 100%;
+      padding: 0.9rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    }
+
+    .icon-input {
+      position: relative;
+    }
+
+    .icon-input i {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+      cursor: pointer;
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.9rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 500;
+      margin-top: 0.5rem;
+    }
+
+    button:hover {
+      background-color: #43A047;
+      transform: translateY(-2px);
+    }
+
+    .links {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .links a {
+      color: var(--primary-color);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .links a:hover {
+      text-decoration: underline;
+    }
+
+    .flash {
+      padding: 0.8rem;
+      margin-bottom: 1.5rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+
+    .error {
+      background-color: rgba(244, 67, 54, 0.1);
+      color: var(--error-color);
+      border: 1px solid rgba(244, 67, 54, 0.3);
+    }
+
+    .success {
+      background-color: rgba(76, 175, 80, 0.1);
+      color: var(--success-color);
+      border: 1px solid rgba(76, 175, 80, 0.3);
+    }
+
+    .info {
+      background-color: rgba(33, 150, 243, 0.1);
+      color: var(--info-color);
+      border: 1px solid rgba(33, 150, 243, 0.3);
+    }
+
+    .home-link {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: var(--text-color);
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .home-link:hover {
+      color: var(--primary-color);
+    }
+
+    .home-link i {
+      margin-right: 6px;
+    }
+
+    .password-requirements {
+      background-color: var(--light-gray);
+      border-radius: 6px;
+      padding: 1rem;
+      margin-top: 0.5rem;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+
+    .requirement {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.3rem;
+    }
+
+    .requirement i {
+      margin-right: 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    .requirement.met i {
+      color: var(--success-color);
+    }
+
+    .requirement.unmet i {
+      color: #aaa;
+    }
+
+    .requirement:last-child {
+      margin-bottom: 0;
+    }
+
+    .terms {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 1rem;
+    }
+
+    .terms a {
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+
+    .terms a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .signup-container {
+        padding: 2rem 1.5rem;
+        max-width: 90%;
+      }
+
+      h1 {
+        font-size: 1.6rem;
+      }
+
+      .home-link {
+        top: 15px;
+        left: 15px;
+      }
+    }
+  </style>
 </head>
 <body>
+  <a href="/" class="home-link">
+    <i class="fas fa-arrow-left"></i> Back to Home
+  </a>
+
   <div class="signup-container">
+    <div class="logo-container">
+      <img src="static/logonew.jpg" alt="Diet Planner Logo">
+      <h2>Diet Planner</h2>
+    </div>
+
     <h1>Create an Account</h1>
+
     {% with messages = get_flashed_messages(with_categories=True) %}
       {% if messages %}
         {% for category, message in messages %}
@@ -18,16 +292,113 @@
         {% endfor %}
       {% endif %}
     {% endwith %}
+
     <form method="POST" action="/signup">
-      <label for="email">E-Mail</label>
-      <input type="email" name="email" required>
-      <label for="password">Password</label>
-      <input type="password" name="password" required>
-      <button type="submit">Sign Up</button>
+      <div class="input-group">
+        <label for="email">E-Mail</label>
+        <div class="icon-input">
+          <input type="email" name="email" id="email" required placeholder="Enter your email">
+          <i class="fas fa-envelope"></i>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="password">Password</label>
+        <div class="icon-input">
+          <input type="password" name="password" id="password" required placeholder="Create a password">
+          <i class="fas fa-eye-slash" id="togglePassword"></i>
+        </div>
+
+        <div class="password-requirements">
+          <div class="requirement unmet" id="length">
+            <i class="fas fa-circle"></i> At least 8 characters
+          </div>
+          <div class="requirement unmet" id="uppercase">
+            <i class="fas fa-circle"></i> At least one uppercase letter
+          </div>
+          <div class="requirement unmet" id="number">
+            <i class="fas fa-circle"></i> At least one number
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" id="submitBtn">Sign Up</button>
+
+      <div class="terms">
+        By signing up, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+      </div>
     </form>
+
     <div class="links">
       <a href="/login">Already have an account? Log in here.</a>
     </div>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const togglePassword = document.getElementById('togglePassword');
+      const passwordInput = document.getElementById('password');
+      const lengthReq = document.getElementById('length');
+      const uppercaseReq = document.getElementById('uppercase');
+      const numberReq = document.getElementById('number');
+
+      if (togglePassword && passwordInput) {
+        // Toggle password visibility
+        togglePassword.addEventListener('click', function() {
+          const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+          passwordInput.setAttribute('type', type);
+
+          // Toggle eye icon
+          this.classList.toggle('fa-eye');
+          this.classList.toggle('fa-eye-slash');
+        });
+
+        // Check password requirements
+        passwordInput.addEventListener('input', function() {
+          const value = this.value;
+
+          // Check length
+          if (value.length >= 8) {
+            lengthReq.classList.add('met');
+            lengthReq.classList.remove('unmet');
+          } else {
+            lengthReq.classList.add('unmet');
+            lengthReq.classList.remove('met');
+          }
+
+          // Check uppercase
+          if (/[A-Z]/.test(value)) {
+            uppercaseReq.classList.add('met');
+            uppercaseReq.classList.remove('unmet');
+          } else {
+            uppercaseReq.classList.add('unmet');
+            uppercaseReq.classList.remove('met');
+          }
+
+          // Check number
+          if (/[0-9]/.test(value)) {
+            numberReq.classList.add('met');
+            numberReq.classList.remove('unmet');
+          } else {
+            numberReq.classList.add('unmet');
+            numberReq.classList.remove('met');
+          }
+        });
+      }
+
+      // Auto-hide flash messages after 5 seconds
+      const flashMessages = document.querySelectorAll('.flash');
+      if (flashMessages.length > 0) {
+        setTimeout(() => {
+          flashMessages.forEach(message => {
+            message.style.opacity = '0';
+            setTimeout(() => {
+              message.style.display = 'none';
+            }, 500);
+          });
+        }, 5000);
+      }
+    });
+  </script>
 </body>
 </html>

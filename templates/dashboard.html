@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diet Planner - Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="static/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --primary-light: #E8F5E9;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --white: #ffffff;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --accent-color: #FF9800;
+            --danger-color: #F44336;
+            --success-color: #4CAF50;
+            --info-color: #2196F3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: var(--light-gray);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-container img {
+            height: 40px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .logo-container h1 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            padding-left: 10px;
+            color: var(--primary-color);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .dashboard-btn, .logout-btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dashboard-btn {
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            background-color: transparent;
+        }
+
+        .dashboard-btn:hover {
+            background-color: var(--primary-light);
+        }
+
+        .logout-btn {
+            color: var(--white);
+            background-color: var(--danger-color);
+            border: none;
+        }
+
+        .logout-btn:hover {
+            background-color: #D32F2F;
+        }
+
+        .main-container {
+            margin: 100px auto 40px;
+            width: 90%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            flex: 1;
+        }
+
+        .welcome-section {
+            background-color: var(--primary-light);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .welcome-section h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .welcome-section p {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .dashboard-card {
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .dashboard-card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dashboard-card p {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .dashboard-card .btn {
+            padding: 0.7rem 1.2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            text-align: center;
+            display: inline-block;
+        }
+
+        .primary-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .primary-btn:hover {
+            background-color: #43A047;
+        }
+
+        .accent-btn {
+            background-color: var(--accent-color);
+            color: var(--white);
+        }
+
+        .accent-btn:hover {
+            background-color: #F57C00;
+        }
+
+        .info-btn {
+            background-color: var(--info-color);
+            color: var(--white);
+        }
+
+        .info-btn:hover {
+            background-color: #1E88E5;
+        }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card .icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .stat-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .stat-card p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .recent-meals {
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+        }
+
+        .recent-meals h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .meal-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .meal-item {
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .meal-item:hover {
+            background-color: var(--primary-light);
+        }
+
+        .meal-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .meal-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .meal-details h4 {
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .meal-details p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .meal-calories {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        footer {
+            background-color: var(--text-color);
+            color: var(--white);
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: auto;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            margin-top: 1rem;
+            position: relative;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 10px;
+            width: 75%; /* Example progress */
+        }
+
+        .new-plan-section {
+            background-color: var(--primary-color);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .new-plan-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .new-plan-section p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .new-plan-btn {
+            background-color: white;
+            color: var(--primary-color);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .new-plan-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                margin-top: 80px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .welcome-section h1 {
+                font-size: 1.6rem;
+            }
+
+            header {
+                padding: 1rem 3%;
+            }
+
+            .logo-container h1 {
+                font-size: 1.2rem;
+            }
+
+            .dashboard-card h2 {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-section {
+                grid-template-columns: 1fr;
+            }
+
+            .new-plan-section h2 {
+                font-size: 1.4rem;
+            }
+
+            .meal-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="static/logonew.jpg" alt="Diet Planner Logo">
+            <h1>Diet Planner</h1>
+        </div>
+        <div class="buttons">
+            <a href="/dashboard" class="dashboard-btn"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="/logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="welcome-section">
+            <h1>Welcome, {{user}}!</h1>
+            <p>Track your diet progress, create new meal plans, and monitor your caloric intake all in one place.</p>
+        </div>
+
+        <div class="new-plan-section">
+            <h2>Ready for a new meal plan?</h2>
+            <p>Create a personalized diet plan based on your preferences and goals</p>
+            <a href="/counter" class="new-plan-btn"><i class="fas fa-plus-circle"></i> Create New Plan</a>
+        </div>
+
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="icon"><i class="fas fa-fire"></i></div>
+                <h3>{% if calories %} {{calories}} {% endif %}</h3>
+                <p>Daily Calorie Target</p>
+            </div>
+            <div class="stat-card">
+                <div class="icon"><i class="fas fa-utensils"></i></div>
+                <h3>3</h3>
+                <p>Meals Per Day</p>
+            </div>
+            <div class="stat-card">
+                <div class="icon"><i class="fas fa-weight"></i></div>
+                <h3>{% if weight %} {{weight}} {% endif %}</h3>
+                <p>Current Weight</p>
+            </div>
+            <div class="stat-card">
+                <div class="icon"><i class="fas fa-chart-line"></i></div>
+                <h3>-2kg</h3>
+                <p>Weight Progress</p>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <h2><i class="fas fa-chart-pie"></i> Nutrition Breakdown</h2>
+                <p>View your daily nutrition breakdown including macros and micronutrients.</p>
+                <div class="chart-container" id="nutrition-chart">
+                    <canvas id="macroChart"></canvas>
+                </div>
+                <a href="/nutrition" class="btn primary-btn">View Details</a>
+            </div>
+
+            <div class="dashboard-card">
+                <h2><i class="fas fa-bullseye"></i> Goal Progress</h2>
+                <p>Track your progress towards your weight and fitness goals.</p>
+                <h4>Weight Goal: 68kg</h4>
+                <div class="progress-container">
+                    <div class="progress-bar"></div>
+                </div>
+                <p>75% to goal - Keep going!</p>
+                <a href="/goals" class="btn accent-btn">Update Goals</a>
+            </div>
+
+            <div class="dashboard-card">
+                <h2><i class="fas fa-history"></i> Diet History</h2>
+                <p>Review your past meal plans and diet progress over time.</p>
+                <div class="chart-container" id="history-chart">
+                    <canvas id="weightChart"></canvas>
+                </div>
+                <a href="/history" class="btn info-btn">View History</a>
+            </div>
+        </div>
+
+        <div class="recent-meals">
+            <h2><i class="fas fa-utensils"></i> Recent Meal Plans</h2>
+            <div class="meal-list">
+                <div class="meal-item">
+                    <div class="meal-info">
+                        <div class="meal-icon">
+                            <i class="fas fa-egg"></i>
+                        </div>
+                        <div class="meal-details">
+                            <h4>Vegetarian Breakfast Bowl</h4>
+                            <p>Created on April 15, 2025</p>
+                        </div>
+                    </div>
+                    <div class="meal-calories">450 calories</div>
+                </div>
+
+                <div class="meal-item">
+                    <div class="meal-info">
+                        <div class="meal-icon">
+                            <i class="fas fa-drumstick-bite"></i>
+                        </div>
+                        <div class="meal-details">
+                            <h4>Grilled Chicken Salad</h4>
+                            <p>Created on April 15, 2025</p>
+                        </div>
+                    </div>
+                    <div class="meal-calories">550 calories</div>
+                </div>
+
+                <div class="meal-item">
+                    <div class="meal-info">
+                        <div class="meal-icon">
+                            <i class="fas fa-fish"></i>
+                        </div>
+                        <div class="meal-details">
+                            <h4>Baked Salmon with Veggies</h4>
+                            <p>Created on April 15, 2025</p>
+                        </div>
+                    </div>
+                    <div class="meal-calories">650 calories</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Diet Planner. By Aryan Naithani.</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create Macro Nutrition Chart
+            const macroCtx = document.getElementById('macroChart').getContext('2d');
+            const macroChart = new Chart(macroCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Protein', 'Carbs', 'Fat'],
+                    datasets: [{
+                        data: [30, 50, 20],
+                        backgroundColor: [
+                            '#4CAF50',
+                            '#2196F3',
+                            '#FF9800'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Create Weight Progress Chart
+            const weightCtx = document.getElementById('weightChart').getContext('2d');
+            const weightChart = new Chart(weightCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mar 20', 'Mar 27', 'Apr 3', 'Apr 10', 'Apr 17'],
+                    datasets: [{
+                        label: 'Weight (kg)',
+                        data: [74, 73.5, 72.8, 72.3, 72],
+                        backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                        borderColor: '#4CAF50',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 68,
+                            max: 76
+                        }
+                    }
+                }
+            });
+
+            // Add hover effects and animations
+            const cards = document.querySelectorAll('.dashboard-card, .stat-card, .meal-item');
+
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = card.classList.contains('stat-card') ? 'translateY(-3px)' : 'translateY(-5px)';
+                    this.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.15)';
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+                });
+            });
+
+            // Add smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

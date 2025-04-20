@@ -138,7 +138,7 @@ class DashboardView(MethodView):
 
     @login_required
     def get(self):
-        return "<h1>Welcome to your dashboard!</h1>"
+        return render_template('dashboard.html', user=session['user_email'], calories=session['calories'], weight=session['mass'])
 
 
 class CalorieFormPage(MethodView):
@@ -176,6 +176,7 @@ class CalorieFormPage(MethodView):
         calories = round((((10 * weight) + (6.25 * height) - (5 * age) + 5) * activity) * goal) if gender == 'm' else \
             round((((10 * weight) + (6.25 * height) - (5 * age) - 161) * activity) * goal)
         session['calories'] = calories
+        session['mass'] = weight
 
         try:
             conn = pymysql.connect(host=db_host, port=db_port, user=db_user, password=db_password, database=db_name)
@@ -256,8 +257,8 @@ app.add_url_rule('/signup', view_func=SignupView.as_view('signup'))
 app.add_url_rule('/dashboard', view_func=DashboardView.as_view('dashboard'))
 app.add_url_rule('/', view_func=HomePage.as_view('home_page'))
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+#if __name__ == "__main__":
+#    port = int(os.environ.get("PORT", 5000))
+#    app.run(host="0.0.0.0", port=port)
 
-#app.run(debug=True)
+app.run(debug=True)
