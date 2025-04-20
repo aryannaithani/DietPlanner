@@ -3,23 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diet Planner - Your Recipes</title>
     <link rel="icon" type="image/x-icon" href="static/favicon.ico">
-    <title>Diet Planner</title>
-    <link rel="stylesheet" href="static/sample-result.css">
-    <link rel="stylesheet" href="static/mediaqueries.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --primary-light: #E8F5E9;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --white: #ffffff;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: var(--light-gray);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-container img {
+            height: 40px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .logo-container h1 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            padding-left: 10px;
+            color: var(--primary-color);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .login, .signup, .get-started, .learn-more, .submit-btn {
+      padding: 0.5rem 1.2rem;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .login {
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+      background-color: transparent;
+    }
+
+    .login:hover {
+      background-color: var(--primary-light);
+    }
+
+    .signup, .get-started, .submit-btn {
+      color: var(--white);
+      background-color: var(--primary-color);
+      border: none;
+    }
+
+    .signup:hover, .get-started:hover, .submit-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+        .page-title {
+            text-align: center;
+            margin: 120px auto 20px;
+            font-size: 1.5rem;
+            color: var(--text-color);
+            max-width: 90%;
+            padding: 0 1rem;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto 40px;
+            padding: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-gap: 2rem;
+            flex: 1;
+        }
+
+        .box {
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .box h4 {
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            text-align: center;
+        }
+
+        .box img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+            border-top: 1px solid #eee;
+        }
+
+        .box p {
+            padding: 1rem;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .box button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .box button:hover {
+            background-color: #43A047;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            background-color: var(--text-color);
+            color: var(--white);
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                grid-gap: 1.5rem;
+                padding: 1rem;
+            }
+
+            .page-title {
+                margin-top: 100px;
+                font-size: 1.3rem;
+            }
+
+            header {
+                padding: 1rem 3%;
+            }
+
+            .logo-container h1 {
+                font-size: 1.2rem;
+            }
+
+            .box h4 {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                grid-template-columns: 1fr;
+                width: 95%;
+            }
+
+            .page-title {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-<header>
-    <div style="display: flex; flex-direction: row;">
-      <img src="static/logonew.jpg">
-    <h1 style="padding-left: 10px;">Diet Planner</h1>
-          </div>
-    <div class="buttons">
-      <a href="/login" class="login">Login</a>
+    <header>
+        <div class="logo-container">
+            <img src="static/logonew.jpg" alt="Diet Planner Logo">
+            <h1>Diet Planner</h1>
+        </div>
+        <div class="buttons">
+            <a href="/login" class="login">Login</a>
       <a href="/signup" class="signup">Sign Up</a>
-    </div>
-  </header>
-    <h1>Here are your {{ type }} recipes for {{meal_count}} meals, under {{ calories }} calories excluding {{allergen}}</h1>
+        </div>
+    </header>
+
+    <h1 class="page-title">Here are your {{ type }} recipes for {{meal_count}} meals, under {{ calories }} {% if allergen %} calories excluding {{allergen}} {% endif %}</h1>
+
     <div class="container">
         {% for recipe in recipes %}
             <div class="box">
@@ -30,14 +242,52 @@
                 <h4>{{recipe['nutrition']['nutrients'][0]['amount']}} calories</h4>
                 <p>
                     <a href="{{ recipe.get('sourceUrl', '#') }}" target="_blank">
-                        <button>Look Up Recipe</button>
+                        <button>Look Up Recipe <i class="fas fa-external-link-alt"></i></button>
                     </a>
                 </p>
             </div>
         {% endfor %}
     </div>
-<footer>
-    <p>Diet Planner. By Aryan Naithani.</p>
-  </footer>
+
+    <footer>
+        <p>Diet Planner. By Aryan Naithani.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effect animation to recipe boxes
+            const boxes = document.querySelectorAll('.box');
+
+            boxes.forEach(box => {
+                box.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.15)';
+                });
+
+                box.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+                });
+            });
+
+            // Add smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

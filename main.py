@@ -6,7 +6,7 @@ import pymysql
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 import os
-from flask_login import LoginManager, UserMixin, login_required, login_user
+from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
 
 load_dotenv()
 SPOONACULAR_API_KEY = os.getenv('SPOONACULAR_API_KEY')
@@ -33,6 +33,12 @@ def load_user(user_id):
     if user_id:
         return User(user_id)  # Ensure it returns a valid object
     return None
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('home_page'))
 
 
 class HomePage(MethodView):
@@ -90,7 +96,7 @@ class LoginView(MethodView):
                 session.pop('_flashes', None)
                 cursor.close()
                 conn.close()
-                return redirect(url_for('form_page'))
+                return redirect(url_for('dashboard'))
             else:
                 flash('Invalid email or password.', 'danger')
                 return redirect(url_for('login'))
@@ -138,6 +144,8 @@ class DashboardView(MethodView):
 
     @login_required
     def get(self):
+        session['calories'] = 0
+        session['mass'] = 0
         return render_template('dashboard.html', user=session['user_email'], calories=session['calories'], weight=session['mass'])
 
 

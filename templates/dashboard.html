@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diet Planner - Dashboard</title>
+    <title>NutriTrack - Dashboard</title>
     <link rel="icon" type="image/x-icon" href="static/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -426,10 +426,9 @@
     <header>
         <div class="logo-container">
             <img src="static/logonew.jpg" alt="Diet Planner Logo">
-            <h1>Diet Planner</h1>
+            <h1>NutriTrack ©</h1>
         </div>
         <div class="buttons">
-            <a href="/dashboard" class="dashboard-btn"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
             <a href="/logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
     </header>
@@ -449,7 +448,7 @@
         <div class="stats-section">
             <div class="stat-card">
                 <div class="icon"><i class="fas fa-fire"></i></div>
-                <h3>{% if calories %} {{calories}} {% endif %}</h3>
+                <h3>{% if calories %} {{calories}} {% else %} No Data {% endif %}</h3>
                 <p>Daily Calorie Target</p>
             </div>
             <div class="stat-card">
@@ -459,7 +458,7 @@
             </div>
             <div class="stat-card">
                 <div class="icon"><i class="fas fa-weight"></i></div>
-                <h3>{% if weight %} {{weight}} {% endif %}</h3>
+                <h3>{% if weight %} {{weight}} {% else %} No Data {% endif %}</h3>
                 <p>Current Weight</p>
             </div>
             <div class="stat-card">
@@ -546,7 +545,7 @@
     </div>
 
     <footer>
-        <p>Diet Planner. By Aryan Naithani.</p>
+        <p>NutriTrack © 2025</p>
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
