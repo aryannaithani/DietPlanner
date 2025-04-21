@@ -59,7 +59,8 @@ class HomePage(MethodView):
 
     def get(self):
         h_form = HomePageForm()
-        return render_template('home.html', h_form=h_form)
+        session['user_email'] = ''
+        return render_template('home.html', h_form=h_form, user=session['user_email'])
 
     def post(self):
         h_form = HomePageForm(request.form)

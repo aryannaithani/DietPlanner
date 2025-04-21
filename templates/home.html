@@ -44,6 +44,24 @@
       z-index: 1000;
     }
 
+    .dashboard {
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            background-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dashboard:hover {
+            background-color: var(--primary-light);
+        }
+
     .logo-container {
       display: flex;
       align-items: center;
@@ -413,8 +431,12 @@
       <h1>NutriTrack</h1>
     </div>
     <div class="buttons">
+      {% if user %}
+      <a href="/dashboard" class="dashboard"><i class="fas fa-user"></i> {{user}}</a>
+      {% else %}
       <a href="/login" class="login">Login</a>
       <a href="/signup" class="signup">Sign Up</a>
+      {% endif %}
     </div>
   </header>
 
